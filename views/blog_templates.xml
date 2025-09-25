@@ -1,15 +1,30 @@
 <odoo>
-  <!-- Faz os links de cards/listas apontarem para a URL limpa -->
+  <!-- 1) Troca de links em cards/listas para usar clean_url -->
   <template id="blog_post_card_inherit_cleanurl" inherit_id="website_blog.blog_post_short">
-    <xpath expr="//a[@t-att-href]" position="attributes">
+    <!-- pega o primeiro <a> do card (título do post) -->
+    <xpath expr="//a[@t-att-href][1]" position="attributes">
       <attribute name="t-att-href">blog_post.clean_url or blog_post.website_url</attribute>
     </xpath>
   </template>
 
-  <!-- Canonical usando a URL atual (mantém /en/, /ja/, etc.) -->
+  <!-- 2) Fallback: se o template ID mudar, tenta a âncora com classe do título -->
+  <template id="blog_post_card_inherit_cleanurl_fallback" inherit_id="website_blog.blog_post_short" priority="5">
+    <xpath expr="//a[contains(@class,'o_blog_post_title')]" position="attributes">
+      <attribute name="t-att-href">blog_post.clean_url or blog_post.website_url</attribute>
+    </xpath>
+  </template>
+
+  <!-- 3) Canonical usando a URL atual (mantém /en/, /ja/, etc.) -->
   <template id="blog_post_canonical_inherit" inherit_id="website_blog.blog_post">
     <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
       <link rel="canonical" t-att-href="request.httprequest.base_url + request.httprequest.path"/>
+    </xpath>
+  </template>
+
+  <!-- 4) (Opcional) Mostrar o campo no formulário do post para você ver/editar -->
+  <template id="blog_post_form_inherit_cleanslug" inherit_id="website_blog.blog_post_view_form">
+    <xpath expr="//group" position="inside">
+      <field name="clean_slug" placeholder="meu-slug-limpo"/>
     </xpath>
   </template>
 </odoo>
