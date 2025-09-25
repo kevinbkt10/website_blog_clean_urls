@@ -1,0 +1,15 @@
+<odoo>
+  <!-- Faz os links de cards/listas apontarem para a URL limpa -->
+  <template id="blog_post_card_inherit_cleanurl" inherit_id="website_blog.blog_post_short">
+    <xpath expr="//a[@t-att-href]" position="attributes">
+      <attribute name="t-att-href">blog_post.clean_url or blog_post.website_url</attribute>
+    </xpath>
+  </template>
+
+  <!-- Canonical usando a URL atual (mantém /en/, /ja/, etc.) -->
+  <template id="blog_post_canonical_inherit" inherit_id="website_blog.blog_post">
+    <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
+      <link rel="canonical" t-att-href="request.httprequest.base_url + request.httprequest.path"/>
+    </xpath>
+  </template>
+</odoo>
